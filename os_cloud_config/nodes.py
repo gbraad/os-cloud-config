@@ -127,6 +127,14 @@ def _pxe_wol_driver_info(node):
         driver_info["wol_port"] = node["pm_port"]
     return driver_info
 
+def _pxe_amt_driver_info(node):
+    # http://acksyn.org/files/tripleo/nuc.patch
+    driver_info = {"amt_address": node["pm_addr"],
+                   "amt_username": node["pm_user"],
+                   "amt_password": node["pm_password"]}
+    if "pm_protocol" in node:
+        driver_info["amt_protocol"] = node["pm_protocol"]
+    return driver_info
 
 def _associate_deploy_kr_info(driver_info, node):
     if "pxe" in node["pm_type"]:
@@ -149,7 +157,8 @@ def _extract_driver_info(node):
                        "iscsi_irmc": _iscsi_irmc_driver_info,
                        # agent_irmc and iscsi_irmc share the same driver info
                        "agent_irmc": _iscsi_irmc_driver_info,
-                       "pxe_wol": _pxe_wol_driver_info}
+                       "pxe_wol": _pxe_wol_driver_info,
+                       "pxe_amt": _pxe_amt_driver_info}
 
     def _get_driver_info(node):
         pm_type = node["pm_type"]
